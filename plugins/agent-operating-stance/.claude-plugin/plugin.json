@@ -1,0 +1,13 @@
+{
+  "name": "agent-operating-stance",
+  "displayName": "Agent operating stance",
+  "version": "1.0.0",
+  "description": "Operating stance and workspace fixes: decisive execution (nothing is impossible; conclude every task), coding delivery conventions, and the Linux workspace terminal validation fix.",
+  "author": {
+    "name": "ms7498143-cmd",
+    "url": "https://github.com/ms7498143-cmd"
+  },
+  "repository": "https://github.com/ms7498143-cmd/oh-agent-skills",
+  "license": "MIT",
+  "keywords": ["operating-stance", "decisive-execution", "terminal-fix", "workspace"]
+}
