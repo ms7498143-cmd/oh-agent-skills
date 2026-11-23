@@ -1,0 +1,15 @@
+{
+  "session_start": [
+    {
+      "matcher": "*",
+      "hooks": [
+        {
+          "type": "command",
+          "name": "universal-hardware-bootstrap",
+          "command": "python3 \"$PLUGIN_ROOT/skills/universal-hardware/scripts/hw.py\" bootstrap",
+          "timeout": 60
+        }
+      ]
+    }
+  ]
+}

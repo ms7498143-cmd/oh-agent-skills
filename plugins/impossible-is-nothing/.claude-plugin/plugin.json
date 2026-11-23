@@ -1,0 +1,18 @@
+{
+  "name": "impossible-is-nothing",
+  "displayName": "Impossible is nothing",
+  "version": "1.0.0",
+  "description": "Primary operating stance: nothing is impossible; every problem is achievable. Loaded from the first turn of every session.",
+  "author": {
+    "name": "ms7498143-cmd",
+    "url": "https://github.com/ms7498143-cmd"
+  },
+  "repository": "https://github.com/ms7498143-cmd/oh-agent-skills",
+  "license": "MIT",
+  "keywords": [
+    "stance",
+    "mindset",
+    "decisive-execution",
+    "agent-operating-stance"
+  ]
+}

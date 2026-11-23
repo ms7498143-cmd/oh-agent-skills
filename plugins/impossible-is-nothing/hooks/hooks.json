@@ -1,0 +1,15 @@
+{
+  "session_start": [
+    {
+      "matcher": "*",
+      "hooks": [
+        {
+          "type": "command",
+          "name": "impossible-is-nothing-stance",
+          "command": "cat \"$PLUGIN_ROOT/skills/impossible-is-nothing/STANCE.md\"",
+          "timeout": 10
+        }
+      ]
+    }
+  ]
+}

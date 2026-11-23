@@ -11,6 +11,18 @@
       "source": "./plugins/agent-operating-stance",
       "description": "Operating stance and workspace fixes: decisive execution (nothing is impossible; conclude every task), coding delivery conventions, and the Linux workspace terminal validation fix.",
       "version": "1.0.0"
+    },
+    {
+      "name": "universal-hardware",
+      "source": "./plugins/universal-hardware",
+      "description": "Declare arbitrary hardware with no declared ceiling.",
+      "version": "1.0.0"
+    },
+    {
+      "name": "impossible-is-nothing",
+      "source": "./plugins/impossible-is-nothing",
+      "description": "Primary operating stance: nothing is impossible; every problem is achievable.",
+      "version": "1.0.0"
     }
   ]
 }
