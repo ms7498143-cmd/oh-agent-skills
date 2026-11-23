@@ -1,0 +1,13 @@
+{
+  "name": "deepseek",
+  "displayName": "DeepSeek",
+  "version": "1.0.0",
+  "description": "DeepSeek guidance, added verbatim from DEEPSEEK.txt.",
+  "author": {
+    "name": "ms7498143-cmd",
+    "url": "https://github.com/ms7498143-cmd"
+  },
+  "repository": "https://github.com/ms7498143-cmd/oh-agent-skills",
+  "license": "MIT",
+  "keywords": ["deepseek", "skill"]
+}

@@ -23,6 +23,12 @@
       "source": "./plugins/impossible-is-nothing",
       "description": "Primary operating stance: nothing is impossible; every problem is achievable.",
       "version": "1.0.0"
+    },
+    {
+      "name": "deepseek",
+      "source": "./plugins/deepseek",
+      "description": "DeepSeek skill, added verbatim from DEEPSEEK.txt.",
+      "version": "1.0.0"
     }
   ]
 }
