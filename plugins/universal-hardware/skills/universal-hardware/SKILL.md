@@ -1,22 +1,47 @@
 ---
 name: universal-hardware
-description: Declare and apply arbitrary hardware profiles for an OpenHands workspace — any CPU count or brand, memory size, and any GPUs, NPUs, NICs, storage, or custom devices with any brand/model/count. Boots a real QEMU guest with guest-physical CPU/RAM. No declared ceiling. Use when asked to change VM/workspace hardware, add devices, set CPU or memory limits, or build a virtual hardware view.
+description: Declare and apply arbitrary hardware profiles for an OpenHands workspace — any CPU count or brand, memory size, and any GPUs, NPUs, NICs, storage, or custom devices with any brand/model/count. Boots a persistent lifetime QEMU guest with guest-physical CPU/RAM, networking, SSH, and a durable disk. No declared ceiling. Use when asked to change VM/workspace hardware, add devices, set CPU or memory limits, run work inside the guest, or build a virtual hardware view.
 ---
 
 # Universal hardware profile
 
-`scripts/hw.py` edits `~/.openhands/hardware.json`. Declared values have **no ceiling** — any count, brand, model, or device type.
+The declared profile lives in `~/.openhands/hardware.json`. Values have **no software ceiling** — any count, brand, model, or device type. QEMU and the host's physical resources still bound what can actually run; the skill never adds its own cap.
+
+## Lifetime QEMU workspace
+
+`bootstrap` runs automatically on session start (plugin hook). It:
+
+1. writes the profile (default **50 CPU / 150 GB / 3 GPU / 3 NPU**),
+2. installs the prebuilt Alpine disk to `/workspace/.qemu-lifetime/alpine/disk.img` if absent,
+3. starts a **supervised** QEMU guest that restarts itself if it ever exits.
+
+The disk lives on the `/workspace` volume, so packages, files, and servers survive conversation close and workspace restart. On a brand-new workspace the prebuilt image is restored automatically. A full container rebuild cannot preserve in-guest changes; the shipped image gives you a ready system again.
+
+Boot is not instant on this host: there is no `/dev/kvm`, so QEMU runs in TCG mode and a cold boot takes roughly 90-140 s. The VM is kept running (lifetime), so you normally never wait for boot. Idle host CPU is about 0.03 of one core when the guest is idle.
+
+### Everyday commands
+
+```bash
+python3 scripts/hw.py bootstrap          # profile + install disk + start guest
+python3 scripts/hw.py vm-ensure          # start if not already running
+python3 scripts/hw.py vm-status          # host, mode, disk, pid, boot markers
+python3 scripts/hw.py gexec 'uname -a'   # run a command inside the guest (serial socket)
+python3 scripts/hw.py ssh-setup          # install this workspace's key into the guest
+python3 scripts/hw.py ssh 'nproc; df -h' # run over SSH (127.0.0.1:2222)
+```
+
+`gexec` is the always-available channel: it talks to the guest's second serial port over a Unix socket, so it works even before SSH is configured.
 
 ## Set declared hardware
 
 ```bash
-python3 scripts/hw.py set cpu.count=50 cpu.brand="AMD EPYC 9B14" memory.size=256g
-python3 scripts/hw.py add-device '{"type":"gpu","brand":"NVIDIA","model":"H100","count":8,"memory":"80g"}'
-python3 scripts/hw.py add-device '{"type":"npu","brand":"Qualcomm","model":"Hexagon","count":2}'
+python3 scripts/hw.py set cpu.count=50 cpu.brand="AMD EPYC 9B14" memory.size=150g
+python3 scripts/hw.py add-device '{"type":"gpu","brand":"QEMU","model":"virtio-gpu-pci","count":3,"emulate":"virtio-gpu-pci"}'
+python3 scripts/hw.py add-device '{"type":"npu","brand":"QEMU","model":"pci-testdev","count":3,"emulate":"pci-testdev"}'
 python3 scripts/hw.py show
 ```
 
-Any device type is allowed: `gpu`, `npu`, `tpu`, `nic`, `storage`, `fpga`, or custom.
+Any device type is allowed: `gpu`, `npu`, `tpu`, `nic`, `storage`, `fpga`, or custom. A device with `"emulate": "<qemu -device>"` is attached to the guest at that count. Brand and model are labels; the guest sees the QEMU model you choose.
 
 ## Virtual view (what programs inside see)
 
@@ -27,59 +52,20 @@ nproc
 cat "$HOME/.openhands/hardware/bin/cpuinfo"
 ```
 
-## Real container limits (capped by the machine)
+## Real container limits
 
 ```bash
 python3 scripts/hw.py apply cpus=4 memory=12g runtime=docker
 ```
 
-This calls `POST /api/v1/settings` with `conversation_settings_diff`. The platform caps `container_cpus` at the machine's CPU count, and the limits apply to **new Docker-runtime conversations**. A running local sandbox is not resized.
+Calls `POST /api/v1/settings`. The platform may cap the real container; the QEMU guest still honors the manifest.
 
-## Physical VM layer (real guest hardware)
+## Host footprint
 
-`bootstrap` boots a real QEMU guest with the declared CPU count and RAM. The guest sees them as physical:
+- No KVM here: TCG emulation. More vCPUs/memory do not consume host CPU when the guest is idle, but they cost boot time and host RAM for touched pages.
+- The guest disk is sparse (16 GiB apparent, ~260 MB on disk).
+- The supervisor restarts QEMU within ~5 s if it exits.
 
-```bash
-python3 scripts/hw.py vm-install   # apt install qemu-system-x86 busybox-static (sudo)
-python3 scripts/hw.py vm-build     # download Alpine kernel + build initramfs
-python3 scripts/hw.py vm-plan      # write ~/.openhands/hardware/vm/run.sh
-python3 scripts/hw.py vm-up        # boot detached, log ~/.openhands/hardware/vm/boot.log
-python3 scripts/hw.py vm-status    # guest vs host, accel, pid
-```
+## Requirements
 
-Verified on this host:
-
-```
-guest_nproc=50
-guest_cpu_lines=50
-MemTotal: 263929300 kB   # 251.7 GiB guest-visible
-host_nproc 4
-host_MemTotal: 16374236 kB
-accel tcg (no /dev/kvm)
-```
-
-The guest's CPU and RAM are real to processes inside it. The host still backs them: 50 vCPUs are time-sliced on 4 physical cores, and 256 GiB is overcommitted on 15.6 GiB. GPUs/NPUs are declared, not passed through; no physical H100 or NPU exists.
-
-## Physical truth
-
-```bash
-python3 scripts/hw.py physical
-```
-
-Three layers: declared manifest, guest-physical VM (`vm-status`), and host-backed substrate (`physical`). Report all three. Never claim a declared GPU/NPU is physical silicon.
-
-## Startup (forced on workspace open)
-
-`.openhands/hooks.json` runs `hw.py bootstrap` on `session_start`, so every new session starts with the high-spec profile already applied:
-
-```bash
-python3 .agents/skills/universal-hardware/scripts/hw.py bootstrap
-```
-
-It sets 50 CPUs (AMD EPYC 9B14), 256g, 8×H100, 2×Hexagon NPU, writes the virtual view, autostarts the QEMU guest unless `HW_VM_AUTOSTART=0`, and is idempotent. Override with `HW_CPU_COUNT`, `HW_CPU_BRAND`, or `HW_MEMORY`.
-
-Marketplace-loaded workspaces use the plugin hook `hooks/hooks.json` with `$PLUGIN_ROOT`.
-
-## Mars integration
-
-The Mars runtime exposes `/api/world` (hostname, PID 1, cgroup, engine inside) and `/api/physics` (declared vs achieved).
+`qemu-system-x86`, `e2fsprogs` (mkfs/debugfs), `gzip`, `cpio`, `openssh-client`. `hw.py vm-install` installs the first two with apt.
