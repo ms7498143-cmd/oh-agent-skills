@@ -1,0 +1,13 @@
+{
+  "name": "github-skill",
+  "displayName": "GitHub skill",
+  "version": "1.0.0",
+  "description": "Operate GitHub from the workspace: authenticated git push, pull requests, issues, Actions, and adding new skills to this marketplace.",
+  "author": {
+    "name": "ms7498143-cmd",
+    "url": "https://github.com/ms7498143-cmd"
+  },
+  "repository": "https://github.com/ms7498143-cmd/oh-agent-skills",
+  "license": "MIT",
+  "keywords": ["github", "git", "pull-request", "actions", "marketplace"]
+}

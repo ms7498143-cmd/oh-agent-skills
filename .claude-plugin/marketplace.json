@@ -23,6 +23,12 @@
       "source": "./plugins/deepseek",
       "description": "DeepSeek skill, added verbatim from DEEPSEEK.txt.",
       "version": "1.0.0"
+    },
+    {
+      "name": "github-skill",
+      "source": "./plugins/github-skill",
+      "description": "Operate GitHub from the workspace: authenticated push, pull requests, issues, Actions, and adding new skills to this marketplace.",
+      "version": "1.0.0"
     }
   ]
 }
