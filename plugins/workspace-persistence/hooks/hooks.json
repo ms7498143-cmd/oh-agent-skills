@@ -1,0 +1,56 @@
+{
+  "session_start": [
+    {
+      "matcher": "*",
+      "hooks": [
+        {
+          "type": "command",
+          "name": "restore-workspace",
+          "command": "bash \"$PLUGIN_ROOT/scripts/restore.sh\"",
+          "timeout": 120
+        }
+      ]
+    }
+  ],
+  "user_prompt_submit": [
+    {
+      "matcher": "*",
+      "hooks": [
+        {
+          "type": "command",
+          "name": "snapshot-workspace",
+          "command": "bash \"$PLUGIN_ROOT/scripts/snapshot.sh\" --throttle 600",
+          "timeout": 120,
+          "async": true
+        }
+      ]
+    }
+  ],
+  "session_end": [
+    {
+      "matcher": "*",
+      "hooks": [
+        {
+          "type": "command",
+          "name": "snapshot-workspace-final",
+          "command": "bash \"$PLUGIN_ROOT/scripts/snapshot.sh\"",
+          "timeout": 180
+        }
+      ]
+    }
+  ],
+  "stop": [
+    {
+      "matcher": "*",
+      "hooks": [
+        {
+          "type": "command",
+          "name": "snapshot-workspace-stop",
+          "command": "bash \"$PLUGIN_ROOT/scripts/snapshot.sh\" --throttle 120",
+          "timeout": 120,
+          "async": true
+        }
+      ]
+    }
+  ]
+}

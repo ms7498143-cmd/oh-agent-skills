@@ -1,0 +1,13 @@
+{
+  "name": "workspace-persistence",
+  "displayName": "Workspace persistence",
+  "version": "1.0.0",
+  "description": "Survive sandbox resets: snapshot the workspace and package manifests to a git remote, restore them at session start.",
+  "author": {
+    "name": "ms7498143-cmd",
+    "url": "https://github.com/ms7498143-cmd"
+  },
+  "repository": "https://github.com/ms7498143-cmd/oh-agent-skills",
+  "license": "MIT",
+  "keywords": ["persistence", "sandbox", "reset", "snapshot", "restore"]
+}

@@ -29,6 +29,12 @@
       "source": "./plugins/github-skill",
       "description": "Operate GitHub from the workspace: authenticated push, pull requests, issues, Actions, and adding new skills to this marketplace.",
       "version": "1.0.0"
+    },
+    {
+      "name": "workspace-persistence",
+      "source": "./plugins/workspace-persistence",
+      "description": "Survive sandbox resets: encrypted workspace snapshots and package manifests, restored automatically at session start.",
+      "version": "1.0.0"
     }
   ]
 }
