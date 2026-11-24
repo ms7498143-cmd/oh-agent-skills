@@ -42,5 +42,13 @@
       "description": "Manage an OpenHands account from an agent: settings, persona, skills, marketplaces, secrets, sandboxes, conversations, billing.",
       "version": "1.0.0"
     }
+  ],
+  "skills": [
+    {
+      "name": "openhands-account-management",
+      "source": "./skills/openhands-account-management",
+      "description": "Manage an OpenHands account end to end: settings, persona, skills, marketplaces, secrets, sandboxes, conversations, billing.",
+      "version": "1.0.0"
+    }
   ]
 }
