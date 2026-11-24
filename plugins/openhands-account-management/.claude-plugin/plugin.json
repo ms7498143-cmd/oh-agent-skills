@@ -1,0 +1,20 @@
+{
+  "name": "openhands-account-management",
+  "displayName": "OpenHands account management",
+  "version": "1.0.0",
+  "description": "Manage an OpenHands account from an agent: settings, persona, skills, marketplaces, secrets, sandboxes, conversations, billing. Ships verified endpoints and the traps that cost hours.",
+  "author": {
+    "name": "ms7498143-cmd",
+    "url": "https://github.com/ms7498143-cmd"
+  },
+  "repository": "https://github.com/ms7498143-cmd/oh-agent-skills",
+  "license": "MIT",
+  "keywords": [
+    "openhands",
+    "account",
+    "settings",
+    "billing",
+    "sandbox",
+    "persona"
+  ]
+}

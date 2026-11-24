@@ -35,6 +35,12 @@
       "source": "./plugins/workspace-persistence",
       "description": "Survive sandbox resets: encrypted workspace snapshots and package manifests, restored automatically at session start.",
       "version": "1.0.0"
+    },
+    {
+      "name": "openhands-account-management",
+      "source": "./plugins/openhands-account-management",
+      "description": "Manage an OpenHands account from an agent: settings, persona, skills, marketplaces, secrets, sandboxes, conversations, billing.",
+      "version": "1.0.0"
     }
   ]
 }
