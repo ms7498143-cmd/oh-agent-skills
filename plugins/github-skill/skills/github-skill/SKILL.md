@@ -12,11 +12,17 @@ triggers:
 
 ## Pick a credential
 
-Try in this order, and stop at the first one that has write access:
+The account secret `GITHUB_TOKEN` holds a write-capable PAT (`repo`, `workflow`), so
+it is normally already in the environment. Try in this order and stop at the first
+source that has write access:
 
-1. `$GITHUB_PAT` — a personal access token with `repo` (and `workflow`) scope.
-2. `$GITHUB_TOKEN` — injected by the app. Often **read-only**; verify before relying on it.
+1. `$GITHUB_TOKEN` — account secret, injected into every conversation.
+2. `$GITHUB_PAT` — a per-workspace override, if one is set.
 3. `/var/openhands/.github-token` — mode-600 file, persistent for this runtime. Use `TOKEN=$(cat /var/openhands/.github-token)`.
+
+Some deployments inject a read-only GitHub App token instead of the account secret;
+it fails writes with `Resource not accessible by integration`. The probe below tells
+you which one you have.
 
 Probe write access without changing anything:
 
